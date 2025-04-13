@@ -1,4 +1,5 @@
 # Minas 项目说明文档
+[简体中文](README.md) | [English](README_EN.md) 
 
 ## 项目简介
 

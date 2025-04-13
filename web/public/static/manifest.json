@@ -1,0 +1,15 @@
+{
+    "name": "Minas",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
+    "background_color": "#3367D6",
+    "theme_color": "#3367D6",
+    "icons": [
+        {
+            "src": "logo192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        }
+    ]
+}

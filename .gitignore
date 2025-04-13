@@ -1,0 +1,17 @@
+.history
+.vscode
+*-lock.json
+*.log
+*.bak
+*.out
+logs/
+tmp
+*.db
+*.lock
+key.bak
+node_modules
+dist
+/data
+/wst
+/rclone
+/server/data/certs

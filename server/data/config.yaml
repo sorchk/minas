@@ -1,0 +1,67 @@
+app:
+  host: 0.0.0.0
+  port: 8002
+  context-path: "/minas"
+  ssl-port: 8003
+  enable-ui: true
+  api-user: 1
+  api-key: "01J41WBS0JS2112K3QE3PASKAMGKQ"
+term:
+  command: "bash"
+debug: true
+db:
+  type: sqlite # mysql postgres sqlite
+  host: 127.0.0.1
+  username: root
+  password: ""
+  port: 3306
+  db-name: minas
+  config: "charset=utf8&parseTime=True&loc=Local&timeout=10s" #高级配置：mysql配置格式?key1=value1&key2=value2&key3=value3  postgres配置格式：key1=value1 key2=value2 key3=value3
+  max-idle-conns: 10
+  max-open-conns: 100
+  max-life-time: 60 #单位(秒) 60秒
+  log-mode: "info" # 是控制台打印日志级别 "silent"、"error"、"warn"、"info" 不填默认info  填入silent可以关闭控制台日志
+  log-zap: false # 日志是否用zap保存到本地
+  data-key: #数据加密密钥 默认为空，系统有数据后不要修改，否则会导致数据无法解密
+file:
+  sys: 
+    - "/boot"
+    - "/bin"
+    - "/etc"
+    - "/dev"
+    - "/proc"
+    - "/root"
+    - "/sys"
+    - "/usr/bin"
+    - "/usr/include"
+    - "/usr/lib"
+    - "/usr/lib64"
+    - "/usr/sbin"
+    - "/usr/share"
+redis:
+  enable: false
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+  db: 2
+#单位(60秒*60*24) 24小时
+jwt:
+  app-key: "01J41WBS0JS2K3QE3PASKAMGKQ"
+  expire: 86400
+  issuer: "sction.org"
+  subject: "minas"
+file-upload:
+  max-size: 1000 #单位(MB) 10MB
+md5:
+  hash: "01J41WBS0JCCMWZN9WC59CKRPP"
+rclone:
+  bin-path: "rclone"
+  port: 5572
+  # cmd-timeout: 24
+log:
+  level: "debug" # 是控制台打印日志级别 "silent"、"error"、"warn"、"info"、"debug" 不填默认info  填入silent可以关闭控制台日志
+  log-path: "logs" #日志文件路径
+  log-name: "minas" #日志文件名
+  log-suffix: ".log" #日志文件后缀
+  time-zone: "Asia/Shanghai" #时区
+  max-backup: 10 #日志文件最大备份数

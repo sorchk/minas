@@ -1,67 +1,87 @@
+# 应用基本配置
 app:
-  host: 0.0.0.0
-  port: 8002
-  context-path: "/minas"
-  ssl-port: 8003
-  enable-ui: true
-  api-user: 1
-  api-key: "01J41WBS0JS2112K3QE3PASKAMGKQ"
+  host: 0.0.0.0           # 应用监听的主机地址，0.0.0.0表示监听所有网卡
+  port: 8002              # HTTP服务端口
+  context-path: "/minas"  # 应用上下文路径
+  ssl-port: 8003          # HTTPS服务端口
+  enable-ui: true         # 是否启用UI界面
+  api-user: 1             # API用户ID
+  api-key: "01J41WBS0JS2112K3QE3PASKAMGKQ"  # API访问密钥
+
+# 终端配置
 term:
-  command: "bash"
-debug: true
+  command: "bash"         # 终端使用的默认命令行程序
+
+# 是否启用调试模式
+debug: true               # 开启调试模式会输出更多日志信息
+
+# 数据库配置
 db:
-  type: sqlite # mysql postgres sqlite
-  host: 127.0.0.1
-  username: root
-  password: ""
-  port: 3306
-  db-name: minas
-  config: "charset=utf8&parseTime=True&loc=Local&timeout=10s" #高级配置：mysql配置格式?key1=value1&key2=value2&key3=value3  postgres配置格式：key1=value1 key2=value2 key3=value3
-  max-idle-conns: 10
-  max-open-conns: 100
-  max-life-time: 60 #单位(秒) 60秒
-  log-mode: "info" # 是控制台打印日志级别 "silent"、"error"、"warn"、"info" 不填默认info  填入silent可以关闭控制台日志
-  log-zap: false # 日志是否用zap保存到本地
-  data-key: #数据加密密钥 默认为空，系统有数据后不要修改，否则会导致数据无法解密
+  type: sqlite            # 数据库类型，支持mysql、postgres、sqlite
+  host: 127.0.0.1         # 数据库主机地址
+  username: root          # 数据库用户名
+  password: ""            # 数据库密码
+  port: 3306              # 数据库端口
+  db-name: minas          # 数据库名称
+  config: "charset=utf8&parseTime=True&loc=Local&timeout=10s"  # 高级配置：mysql配置格式?key1=value1&key2=value2&key3=value3  postgres配置格式：key1=value1 key2=value2 key3=value3
+  max-idle-conns: 10      # 最大空闲连接数
+  max-open-conns: 100     # 最大打开连接数
+  max-life-time: 60       # 连接最大生存时间(单位:秒)
+  log-mode: "info"        # 控制台打印日志级别："silent"、"error"、"warn"、"info"(默认)，silent可关闭控制台日志
+  log-zap: false          # 是否使用zap将日志保存到本地
+  data-key:               # 数据加密密钥，默认为空，系统有数据后不要修改，否则会导致数据无法解密
+
+# 文件系统配置
 file:
-  sys: 
-    - "/boot"
-    - "/bin"
-    - "/etc"
-    - "/dev"
-    - "/proc"
-    - "/root"
-    - "/sys"
-    - "/usr/bin"
-    - "/usr/include"
-    - "/usr/lib"
-    - "/usr/lib64"
-    - "/usr/sbin"
-    - "/usr/share"
+  sys:                    # 系统文件目录列表，这些目录在文件管理中会被特殊处理
+    - "/boot"             # 系统启动目录
+    - "/bin"              # 系统可执行文件目录
+    - "/etc"              # 系统配置文件目录
+    - "/dev"              # 设备文件目录
+    - "/proc"             # 进程信息伪文件系统
+    - "/root"             # root用户主目录
+    - "/sys"              # 系统文件目录
+    - "/usr/bin"          # 用户可执行文件目录
+    - "/usr/include"      # 头文件目录
+    - "/usr/lib"          # 库文件目录
+    - "/usr/lib64"        # 64位库文件目录
+    - "/usr/sbin"         # 系统管理员可执行文件目录
+    - "/usr/share"        # 共享数据目录
+
+# Redis配置
 redis:
-  enable: false
-  host: 127.0.0.1
-  port: 6379
-  password: ""
-  db: 2
-#单位(60秒*60*24) 24小时
+  enable: false           # 是否启用Redis
+  host: 127.0.0.1         # Redis主机地址
+  port: 6379              # Redis端口
+  password: ""            # Redis密码
+  db: 2                   # Redis数据库索引
+
+# JWT认证配置
 jwt:
-  app-key: "01J41WBS0JS2K3QE3PASKAMGKQ"
-  expire: 86400
-  issuer: "sction.org"
-  subject: "minas"
+  app-key: "01J41WBS0JS2K3QE3PASKAMGKQ"  # JWT密钥
+  expire: 86400           # 令牌过期时间(单位:秒，86400=24小时)
+  issuer: "sction.org"    # 令牌发行者
+  subject: "minas"        # 令牌主题
+
+# 文件上传配置
 file-upload:
-  max-size: 1000 #单位(MB) 10MB
+  max-size: 1000          # 最大上传文件大小(单位:MB)
+
+# MD5配置
 md5:
-  hash: "01J41WBS0JCCMWZN9WC59CKRPP"
+  hash: "01J41WBS0JCCMWZN9WC59CKRPP"  # MD5哈希密钥
+
+# Rclone配置（用于文件同步）
 rclone:
-  bin-path: "rclone"
-  port: 5572
-  # cmd-timeout: 24
+  bin-path: "rclone"      # Rclone可执行文件路径
+  port: 5572              # Rclone API服务端口
+  # cmd-timeout: 24       # 命令超时时间
+
+# 日志配置
 log:
-  level: "debug" # 是控制台打印日志级别 "silent"、"error"、"warn"、"info"、"debug" 不填默认info  填入silent可以关闭控制台日志
-  log-path: "logs" #日志文件路径
-  log-name: "minas" #日志文件名
-  log-suffix: ".log" #日志文件后缀
-  time-zone: "Asia/Shanghai" #时区
-  max-backup: 10 #日志文件最大备份数
+  level: "debug"          # 日志级别："silent"、"error"、"warn"、"info"、"debug"，不填默认info
+  log-path: "logs"        # 日志文件存储路径
+  log-name: "minas"       # 日志文件名前缀
+  log-suffix: ".log"      # 日志文件后缀
+  time-zone: "Asia/Shanghai"  # 日志记录使用的时区
+  max-backup: 10          # 日志文件最大备份数量

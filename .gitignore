@@ -15,3 +15,5 @@ dist
 /wst
 /rclone
 /server/data/certs
+/changes
+/copy-changes.sh

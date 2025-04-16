@@ -69,13 +69,13 @@
         </template>
         <template v-if="schTask.type == 'FILE_BACKUP'">
           <n-form-item-gi :span="18" :label="t('fields.backup_method')">
-            <n-radio-group v-model:value="schTask.script.type" name="radiobuttongroup1">
-              <n-radio-button v-for="option in backupTypeOptions" :key="option.value" :value="option.value"
-                :label="option.label" />
-            </n-radio-group>
+              <n-radio-group v-model:value="schTask.script.type" name="radiobuttongroup1">
+                <n-radio-button v-for="option in backupTypeOptions" :key="option.value" :value="option.value"
+                  :label="option.label" />
+              </n-radio-group>
           </n-form-item-gi>
           <n-form-item-gi :span="6" :label="t('fields.empty_dir')">
-            <n-switch v-model:value="schTask.script.is_adv" :checked-value="1" :unchecked-value="0">
+            <n-switch v-model:value="schTask.script.is_create_dir" :checked-value="1" :unchecked-value="0">
               <template #checked>
                 {{ t('fields.sync_create') }}
               </template>

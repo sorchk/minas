@@ -237,7 +237,7 @@ func (entity SchTask) toFileBackupJob() (filebackup.FileBackupJob, error) {
 	dst := convertor.ToString(obj["target"])
 	srcId := convertor.ToString(obj["source_nas_id"])
 	dstId := convertor.ToString(obj["target_nas_id"])
-
+	createEmptySrcDirs, _ := convertor.ToBool(convertor.ToString(obj["is_create_dir"]))
 	// 如果有外部存储ID，添加到路径前
 	if srcId != "" {
 		src = srcId + ":" + src
@@ -256,7 +256,7 @@ func (entity SchTask) toFileBackupJob() (filebackup.FileBackupJob, error) {
 		Type:               utils.GetUint(obj, "type", 0),                         // 备份类型（1备份 2镜像 3双向同步 4完整备份）
 		Src:                src,                                                   // 源路径
 		Dst:                dst,                                                   // 目标路径
-		CreateEmptySrcDirs: false,                                                 // 是否创建空源目录
+		CreateEmptySrcDirs: createEmptySrcDirs,                                    // 是否创建空源目录
 		ShowDebug:          utils.GetBool(obj, "show_debug", true),                // 是否显示调试信息
 		Includes:           strings.Split(utils.GetString(obj, "includes"), "\n"), // 包含的文件模式
 		Excludes:           strings.Split(utils.GetString(obj, "excludes"), "\n"), // 排除的文件模式

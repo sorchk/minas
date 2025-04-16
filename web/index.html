@@ -6,7 +6,16 @@
   <link rel="icon" href="/static/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="/static/manifest.json" />
-  <script src="/static/config.js"></script>
+  <script type="text/javascript" lang="javascript" >
+    window.config = {
+      indexPage: '',
+      baseUrl: '',
+      frontBaseUrl: '',
+    }
+    if (!window.indexOnload) {
+        window.indexOnload = [];
+    }
+  </script>
   <title>Minas</title>
 </head>
 

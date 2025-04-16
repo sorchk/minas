@@ -44,7 +44,7 @@ export const typeOptions = [
 export const backupTypeOptions = [
     { "label": t('schtask.backup_type.incremental'), "value": "1" },
     { "label": t('schtask.backup_type.one_way_mirror'), "value": "2" },
-    { "label": t('schtask.backup_type.two_way_sync'), "value": "3" },
+    // { "label": t('schtask.backup_type.two_way_sync'), "value": "3" },
     { "label": t('schtask.backup_type.full_backup'), "value": "4" },
 ]
 const baseUrl = '/sch/schtask';

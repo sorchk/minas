@@ -3,11 +3,11 @@
 
 ## Project Introduction
 
-Minas is a multifunctional system management tool focused on providing powerful data management and automated operations capabilities. Its core features include file backup and synchronization, log and backup file cleaning, scheduled task management, WebDAV service, and super terminal management. It adopts a front-end and back-end separation architecture, with the backend developed in Go and the frontend developed using Vue 3 + TypeScript.
+Minas is a multifunctional system management tool focused on providing powerful data management and automated operations capabilities. Its core features include file backup system, log and backup file cleaning, scheduled task management, WebDAV service, and super terminal management. It adopts a front-end and back-end separation architecture, with the backend developed in Go and the frontend developed using Vue 3 + TypeScript.
 
 ## Features
 
-- **Data File Backup & Synchronization**: Supports various synchronization modes (one-way backup, mirror sync, two-way sync), can be scheduled to execute automatically to protect important data
+- **Data File Backup**: Supports various backup modes (incremental backup, one-way mirror, full backup), can be scheduled to execute automatically to protect important data
 - **Log & Data Cleaning**: Intelligently manages system logs and backup data, automatically cleans expired files according to time, quantity, and other rules to free up storage space
 - **Scheduled Script Tasks**: Powerful task scheduling system supporting cron expressions, can execute custom scripts and system commands
 - **WebDAV Service**: Provides WebDAV protocol support for convenient file access and management
@@ -63,7 +63,7 @@ minas/
 #### Clone Code
 
 ```bash
-git clone git@gitee.com:sorc/minas.git
+git clone git@github.com:sorchk/minas.git
 cd minas
 ```
 
@@ -108,10 +108,6 @@ Or install using alternative methods:
 # Install using curl
 # Linux/macOS
 curl -sSfL https://raw.githubusercontent.com/air-verse/air/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
-
-# Or using Homebrew
-# macOS
-brew install air
 ```
 
 4. Start in development mode
@@ -119,6 +115,7 @@ brew install air
 ```bash
 # Use air tool for hot reload
 cd ..
+chmod +x *.sh
 ./airgo.sh
 ```
 
@@ -181,7 +178,7 @@ The main configuration file is located at `server/data/config.yaml`, which can b
 
 #### Binary Installation
 
-1. Download the binary file suitable for your system from the [releases page](https://gitee.com/sorc/minas/releases)
+1. Download the binary file suitable for your system from the [releases page](https://github.com/sorchk/minas/releases)
 2. Extract the file
 3. Run the executable file
 

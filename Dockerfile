@@ -3,7 +3,7 @@ FROM alpine:3.21
 LABEL author=sorc@sction.org
 ARG TARGETOS
 ARG TARGETARCH
-COPY ./dist/minas_${TARGETARCH} /usr/bin/minas
+COPY ./dist/minas_linux_${TARGETARCH} /usr/bin/minas
 COPY ./rclone/rclone-v1.68.2-linux-${TARGETARCH}/rclone /usr/bin/rclone
 COPY ./rclone/ca.crt /usr/local/share/ca-certificates/myrootca.crt
 #RUN apk add ncat openssh-client

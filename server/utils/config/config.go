@@ -3,8 +3,8 @@ package config
 // CONF 配置信息，全局可访问的配置变量
 var CONF AppConfig
 
-// Version 当前应用版本号
-const Version = "1.3.1"
+// Version 当前应用版本号 my-version
+const Version = "1.3.2"
 
 type AppConfig struct {
 	App struct {

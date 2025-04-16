@@ -158,7 +158,7 @@ This will:
 ./build-docker.sh [version]
 ```
 
-If no version is specified, the default version 1.3.1 will be used.
+If no version is specified, the default version 1.3.2 will be used.
 
 ### Custom Development
 

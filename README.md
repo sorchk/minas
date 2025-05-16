@@ -68,6 +68,14 @@ cd minas
 ```
 
 #### 后端开发
+1. 安装 Go 语言环境
+   - 请参考 [Go 官方文档](https://golang.org/doc/install) 安装 Go 语言环境
+```bash
+export GOPATH=$HOME/go
+export GOROOT=/home/sorc/tools/go
+export PATH=$PATH:$GOROOT/bin
+export PATH=$PATH:$GOPATH/bin
+```
 
 1. 安装 Go 依赖
 

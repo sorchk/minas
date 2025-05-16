@@ -151,6 +151,22 @@ class Ajax {
         const r = await this.ajax.request<Result<T>>(config);
         return r.data;
     }
+    async orequest(config: AxiosRequestConfig): Promise<AxiosResponse> {
+        // 确保有正确的this上下文
+        if (!this.ajax) {
+            throw new Error('Ajax实例未初始化');
+        }
+        return this.ajax.request(config);
+    }
 }
 
-export default new Ajax;
+// 创建单例实例并绑定方法上下文
+const ajaxInstance = new Ajax();
+// 绑定所有方法的上下文
+Object.getOwnPropertyNames(Ajax.prototype).forEach(method => {
+    if (method !== 'constructor' && typeof ajaxInstance[method as keyof Ajax] === 'function') {
+        (ajaxInstance[method as keyof Ajax] as Function) = (ajaxInstance[method as keyof Ajax] as Function).bind(ajaxInstance);
+    }
+});
+
+export default ajaxInstance;

@@ -1,7 +1,6 @@
 package external
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"server/core/app/request"
@@ -57,7 +56,6 @@ func (app ExternalNasApp) RCloneApi(ctx *gin.Context) {
 // List 列出外部NAS
 // 参数 ctx: 请求上下文
 func (app ExternalNasApp) List(ctx *gin.Context) {
-	log.Println("List externalNas")
 	externalNas := nas.ExternalNas{}
 	name := ctx.Query("name")
 	rc_name := ctx.Query("rc_name")

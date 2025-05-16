@@ -41,7 +41,8 @@ import { initLoadingBar } from "@/router/router";
 import DefaultLayout from "./layouts/Default.vue";
 import SimpleLayout from "./layouts/Simple.vue";
 import EmptyLayout from "./layouts/Empty.vue";
-
+import setIntroduction from '@/utils/setIconfont';
+import { onBeforeMount } from "vue";
 const Root = defineComponent({
   name: "App",
   components: {
@@ -57,6 +58,14 @@ const Root = defineComponent({
     window.notification = useNotification();
     initLoadingBar(useLoadingBar());
 
+    // 设置初始化，防止刷新时恢复默认
+    onBeforeMount(() => {
+      console.log("onBeforeMount");
+      // 设置批量第三方 icon 图标
+      setIntroduction.cssCdn();
+      // 设置批量第三方 js
+      setIntroduction.jsCdn();
+    });
     const route = useRoute();
     return {
       layout: computed(() => (route.meta.layout || "default") + "-layout"),

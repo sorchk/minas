@@ -20,7 +20,7 @@
         </n-popover>
         <n-text tag="div" class="logo" :depth="1" @click="router.push('/')">
           <img src="/static/favicon.ico" v-if="!isMobile" />
-          Minase
+          Minas
         </n-text>
       </div>
       <n-space justify="end" align="center" class="header-right" :size="0">

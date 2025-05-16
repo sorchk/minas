@@ -99,10 +99,25 @@ export interface Button {
     text: string,
     action: (e: MouseEvent) => void,
     prompt?: string,
+    icon?: any,  // 添加图标属性
+    title?: string,  // 添加标题属性，用于tooltip
 }
 
 export function renderButtons(btns: Array<Button>) {
-    return btns.map(btn => renderButton(btn.type, btn.text, btn.action, btn.prompt));
+    return h(
+        NSpace,
+        { size: 4 },
+        {
+            default: () => btns.map(btn => renderButton(
+                btn.type, 
+                btn.text, 
+                btn.action, 
+                btn.prompt, 
+                btn.icon, 
+                btn.title
+            )),
+        }
+    );
 }
 
 export function renderButton(
@@ -110,6 +125,8 @@ export function renderButton(
     text: string,
     action: (e: MouseEvent) => void,
     prompt?: string,
+    icon?: any,
+    title?: string,
 ) {
     if (prompt) {
         return h(
@@ -119,26 +136,48 @@ export function renderButton(
             },
             {
                 default: () => prompt,
-                trigger: () => renderBtn(type, text),
+                trigger: () => renderBtn(type, text, undefined, icon, title),
             }
         )
     }
-    return renderBtn(type, text, action)
+    return renderBtn(type, text, action, icon, title)
 }
 
 function renderBtn(
     type: "default" | "primary" | "error" | "info" | "success" | "warning",
     text: string,
     action?: (e: MouseEvent) => void,
+    icon?: any,
+    title?: string,
 ) {
+    const props: any = {
+        size: "tiny",
+        quaternary: true,
+        type: type,
+        onClick: action,
+    };
+    
+    // 添加tooltip属性
+    if (title) {
+        props.title = title;
+    }
+    
+    // 如果有图标，则使用图标插槽
+    if (icon) {
+        return h(
+            NButton,
+            props,
+            { 
+                default: () => text,
+                icon: () => h(icon)
+            }
+        );
+    }
+
+    // 否则只返回文本内容
     return h(
         NButton,
-        {
-            size: "tiny",
-            quaternary: true,
-            type: type,
-            onClick: action,
-        },
+        props,
         { default: () => text }
-    )
+    );
 }

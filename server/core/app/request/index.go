@@ -72,11 +72,11 @@ func getEncJson(ctx *gin.Context, key string, v any) error {
 	return json.Unmarshal([]byte(data), v)
 }
 
-// NewEqFilter 创建一个等于条件的查询过滤器
+// NewEqualFilter 创建一个等于条件的查询过滤器
 // 参数 column: 列名
 // 参数 value: 值
 // 返回值: 查询过滤器
-func NewEqFilter(column string, value any) QueryFilter {
+func NewEqualFilter(column string, value any) QueryFilter {
 	return QueryFilter{Column: column, Operator: "=?", Value: value}
 }
 

@@ -2,12 +2,13 @@ package route
 
 import (
 	"fmt"
-	"server/app/baisc/system"
-	"server/app/baisc/user"
+	"server/app/basic/projectdir"
+	"server/app/basic/system"
+	"server/app/basic/user"
 	"server/app/nas/external"
 	"server/app/nas/webdav"
 	"server/app/schtask"
-	"server/app/schtask/log"
+	"server/app/sflow"
 	"server/app/term"
 	"server/middleware"
 	"server/utils/config"
@@ -55,6 +56,9 @@ func Init(app *gin.Engine) {
 		{
 			// 添加用户管理相关路由
 			user.AddRoutes(Basic)
+			println("------------------")
+			// 添加项目目录相关路由
+			projectdir.AddRoutes(Basic)
 		}
 
 		// 终端管理路由组
@@ -68,9 +72,17 @@ func Init(app *gin.Engine) {
 		SchSystem := v1.Group("/sch", middleware.AuthMiddleware)
 		{
 			// 添加计划任务相关路由
-			schtask.AddRoutes(SchSystem)
+			schtask.SchTaskApp{}.AddRoutes(SchSystem)
 			// 添加计划任务日志相关路由
-			log.AddRoutes(SchSystem)
+			schtask.SchLogApp{}.AddRoutes(SchSystem)
+		}
+
+		// 作业流程路由组，需要认证中间件保护
+		SFlowSystem := v1.Group("/sflow", middleware.AuthMiddleware)
+		{
+			// 添加作业流程相关路由
+			sflow.SFlowApp{}.AddRoutes(SFlowSystem)
+			sflow.SFlowLogApp{}.AddRoutes(SFlowSystem)
 		}
 
 		// 文件存储(NAS)路由组，需要认证中间件保护

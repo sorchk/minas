@@ -6,6 +6,7 @@ import (
 	"server/core/app/request"
 	"server/core/app/response"
 	"server/core/db"
+	"server/utils/logger"
 
 	"github.com/gin-gonic/gin"
 )
@@ -77,6 +78,7 @@ func (app BaseApp[T]) Save(ctx *gin.Context) {
 	// 从请求体绑定JSON数据到实体
 	if err := ctx.BindJSON(&entity); err != nil {
 		response.BadRequest(ctx, "参数错误！")
+		logger.LOG.Errorf("参数错误:%s", err.Error())
 		return
 	}
 	// 获取当前用户ID

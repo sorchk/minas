@@ -8,6 +8,7 @@ logs/
 tmp
 *.db
 *.lock
+rclone.conf
 key.bak
 node_modules
 dist
@@ -17,3 +18,6 @@ dist
 /server/data/certs
 /changes
 /copy-changes.sh
+server/data/minas.db-shm
+server/data/minas.db-wal
+copy_changed_files.sh

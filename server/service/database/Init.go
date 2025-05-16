@@ -14,6 +14,7 @@ import (
 	"server/service/nas"
 	"server/service/scheduled"
 	"server/service/scheduled/log"
+	"server/service/sflow"
 
 	"github.com/glebarez/sqlite"
 	"gorm.io/driver/mysql"
@@ -83,6 +84,9 @@ func Init() {
 	// 自动迁移数据表结构，确保模型对应的数据表存在且结构正确
 	db.AutoMigrate(
 		&basic.User{},        // 用户表
+		&basic.ProjectDir{},  // 项目目录表
+		&sflow.SFlow{},       // 流程配置表
+		&sflow.SFlowLog{},    // 流程日志表
 		&nas.Webdav{},        // WebDAV配置表
 		&nas.ExternalNas{},   // 外部存储配置表
 		&scheduled.SchTask{}, // 计划任务表

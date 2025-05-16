@@ -20,6 +20,7 @@ export interface SchTask {
     updated_at: string;
     created_by: number;
     updated_by: number;
+    project_dir_id?: number; // 项目目录ID，关联到项目目录
 }
 export const runStatusMapping = {
     "-2": { info: t('schtask.status.abnormal_exit'), type: 'error' },
@@ -58,7 +59,7 @@ export class SchTaskApi {
     }
 
     search(args: SearchArgs) {
-        args.columns = JSON.stringify("id,type,name,cron,last_status,last_run_time,next_run_time,log_keep_num,is_disable,created_at,updated_at,created_by,updated_by".split(","))
+        args.columns = JSON.stringify("id,type,name,cron,last_status,last_run_time,next_run_time,log_keep_num,is_disable,created_at,updated_at,created_by,updated_by,project_dir_id".split(","))
         return ajax.search<SchTask>(baseUrl + '/list', args)
     }
 

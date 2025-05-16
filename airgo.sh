@@ -19,6 +19,6 @@ if [ ! -f tmp/main ]; then
     # 创建tmp目录
     mkdir -p tmp
     # 编译
-    go build -o tmp/main ./server.go
+    go build -o tmp/main ./main.go
 fi
 air server

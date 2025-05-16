@@ -166,6 +166,12 @@ export const menuOptions: MenuOption[] = [
     }
   },
   {
+    label: t('fields.projectdir'),
+    key: "projectdir",
+    path: "/basic/projectdir",
+    icon: renderIcon(AlbumsOutline),
+  },
+  {
     label: t('fields.nas'),
     key: "nas",
     icon: renderIcon(FileTrayFullOutline),
@@ -183,6 +189,12 @@ export const menuOptions: MenuOption[] = [
         icon: renderIcon(ServerOutline),
       }
     ],
+  },
+  {
+    label: '作业流程',
+    key: "sflow",
+    path: "/sflow",
+    icon: renderIcon(GlobeOutline),
   },
   {
     label: t('fields.schtask'),

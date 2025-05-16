@@ -8,9 +8,12 @@ import InitPage from '../pages/Init.vue'
 import { store } from "../store";
 import webdavRoute from "./routes/nas/webdav";
 import externalNasRoute from "./routes/nas/externalNas";
+import projectdirRoute from "./routes/basic/projectdir";
 import schTaskRoute from "./routes/sch/task";
 import schLogRoute from "./routes/sch/log";
 import termRoute from "./routes/term/index";
+import sflowRoute from "./routes/sflow/index";
+import sflowLogRoute from "./routes/sflow/log";
 import { t } from "@/locales";
 import { baseUrl, frontBaseUrl } from '@/config';
 
@@ -92,9 +95,12 @@ const routes: RouteRecordRaw[] = [
   },
   ...webdavRoute,
   ...externalNasRoute,
+  ...projectdirRoute,
   ...schTaskRoute,
   ...schLogRoute,
   ...termRoute,
+  ...sflowRoute,
+  ...sflowLogRoute,
 ]
 
 function createSiteRouter() {

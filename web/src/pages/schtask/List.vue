@@ -20,18 +20,37 @@
     </template>
   </x-page-header>
   <n-space class="page-body" vertical :size="12">
-    <n-space :size="12">
-      <n-input size="small" v-model:value="args.name" :placeholder="t('fields.name')" clearable />
-      <n-button size="small" type="primary" @click="() => fetchData()">{{ t('buttons.search') }}</n-button>
-    </n-space>
-    <n-data-table remote :row-key="(row: any) => row.id" size="small" :columns="columns" :data="state.data"
-      :pagination="pagination" :loading="state.loading" @update:page="fetchData" @update-page-size="changePageSize"
-      scroll-x="max-content" />
+    <n-grid :cols="24" :x-gap="12">
+      <!-- 左侧项目目录树 -->
+      <n-grid-item :span="6">
+        <n-card :bordered="false" size="small" title="项目目录">
+          <n-spin :show="treeLoading">
+            <n-tree
+              block-line
+              :data="treeData"
+              :default-expanded-keys="expandedKeys"
+              :selected-keys="selectedKeys"
+              :on-update:selected-keys="handleSelectNode"
+            />
+          </n-spin>
+        </n-card>
+      </n-grid-item>
+      <!-- 右侧任务列表 -->
+      <n-grid-item :span="18">
+        <n-space :size="12">
+          <n-input size="small" v-model:value="args.name" :placeholder="t('fields.name')" clearable />
+          <n-button size="small" type="primary" @click="() => fetchData()">{{ t('buttons.search') }}</n-button>
+        </n-space>
+        <n-data-table remote :row-key="(row: any) => row.id" size="small" :columns="columns" :data="state.data"
+          :pagination="pagination" :loading="state.loading" @update:page="fetchData" @update-page-size="changePageSize"
+          scroll-x="max-content" />
+      </n-grid-item>
+    </n-grid>
   </n-space>
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from "vue";
+import { reactive, watch, ref, onMounted } from "vue";
 import {
   NSpace,
   NInput,
@@ -39,6 +58,12 @@ import {
   NIcon,
   NDataTable,
   useMessage,
+  NGrid,
+  NGridItem,
+  NCard,
+  NTree,
+  NSpin,
+  TreeOption
 } from "naive-ui";
 import {
   AddOutline as AddIcon,
@@ -47,6 +72,8 @@ import {
 import { useRoute, useRouter } from "vue-router";
 import XPageHeader from "@/components/PageHeader.vue";
 import schtaskApi from "@/api/sch/task";
+import projectDirApi from "@/api/basic/projectdir";
+import type { ProjectDirItem } from "@/api/basic/projectdir";
 import type { SchTask } from "@/api/sch/task";
 import { runStatusMapping, typeMapping } from "@/api/sch/task";
 import { useDataTable } from "@/utils/data-table";
@@ -56,12 +83,75 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const route = useRoute();
 const router = useRouter();
+
+// 项目目录树相关状态
+const treeData = ref<TreeOption[]>([]);
+const treeLoading = ref(false);
+const expandedKeys = ref<string[]>([]);
+const selectedKeys = ref<string[]>([]);
+
+// 项目目录树加载
+const loadProjectDirTree = async () => {
+  treeLoading.value = true;
+  try {
+    // 获取task类型的项目目录树
+    const res = await projectDirApi.getTree(); 
+    if (res.data && Array.isArray(res.data)) {
+      treeData.value = convertToTreeOptions(res.data);
+      
+      // 如果有数据，默认展开第一级
+      if (treeData.value.length > 0) {
+        expandedKeys.value = [treeData.value[0].key as string];
+      }
+    }
+  } catch (error) {
+    console.error("加载项目目录树失败", error);
+  } finally {
+    treeLoading.value = false;
+  }
+};
+
+// 转换项目目录数据为树形选项
+const convertToTreeOptions = (dirs: ProjectDirItem[]): TreeOption[] => {
+  return dirs.map(dir => ({
+    key: dir.id.toString(),
+    label: dir.name,
+    children: dir.children && dir.children.length > 0 
+      ? convertToTreeOptions(dir.children) 
+      : undefined
+  }));
+};
+
+// 处理选择节点事件
+const handleSelectNode = (keys: string[]) => {
+  selectedKeys.value = keys;
+  // 根据选中的目录节点过滤任务列表
+  if (keys.length > 0) {
+    args.project_dir_id = parseInt(keys[0]);
+  } else {
+    args.project_dir_id = undefined;
+  }
+  fetchData(1);
+};
+
+// 新建任务处理
 const newHandler = () => {
-  router.push({ name: 'schtask_new' })
-}
+  // 如果已选择了项目目录，则将目录ID传递给新建页面
+  if (selectedKeys.value.length > 0) {
+    router.push({ 
+      name: 'schtask_new',
+      query: { project_dir_id: selectedKeys.value[0] }
+    });
+  } else {
+    router.push({ name: 'schtask_new' });
+  }
+};
+
 const args = reactive({
   name: "",
+  project_dir_id: undefined as number | undefined
 });
+
 const columns = [
   {
     title: t('fields.id'),
@@ -81,24 +171,6 @@ const columns = [
     title: t('fields.cron'),
     key: "cron",
   },
-  // {
-  //   title: "运行状态",
-  //   key: "last_status",
-  //   render: (row: SchTask) => renderTag(
-  //     runStatusMapping[row.last_status + ""].info,
-  //     runStatusMapping[row.last_status + ""].type
-  //   ),
-  // },
-  // {
-  //   title: "最近运行时间",
-  //   key: "last_run_time",
-  //   render: (row: SchTask) => renderTime(row.last_run_time),
-  // },
-  // {
-  //   title: "下次运行时间",
-  //   key: "next_run_time",
-  //   render: (row: SchTask) => renderTime(row.next_run_time),
-  // },
   {
     title: t('fields.status'),
     key: "is_disable",
@@ -156,10 +228,14 @@ async function exec(u: SchTask, index: number) {
   } else {
     message.info(t('texts.action_error'));
   }
-
 }
 
 watch(() => route.query.filter, (newValue: any, oldValue: any) => {
   fetchData()
 })
+
+// 组件挂载时加载项目目录树
+onMounted(() => {
+  loadProjectDirTree();
+});
 </script>

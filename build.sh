@@ -6,7 +6,7 @@ rm -rf $baseDir/server/www/dist
 cd $baseDir/web
 npm run build
 echo "Building server..."
-sudo rm -rf $baseDir/dist
+rm -rf $baseDir/dist
 rm -rf $baseDir/server/data/workdir
 rm -rf $baseDir/server/tmp
 rm -rf $baseDir/server/logs

@@ -19,15 +19,14 @@ type SchTaskApp struct {
 
 // AddRoutes 注册计划任务相关的路由
 // 在父路由组下创建计划任务路由组，并注册相关的路由处理函数
-func AddRoutes(parentGroup *gin.RouterGroup) {
+func (SchTaskApp) AddRoutes(parentGroup *gin.RouterGroup) {
 	// 创建计划任务路由组
 	group := parentGroup.Group("/schtask")
-	// 创建应用实例
 	app := SchTaskApp{}
 	// 注册基础路由（CRUD操作）
 	webapi.AddBaseRoutes(group, &app)
 	// 设置允许更新的字段列表
-	app.UpdateFields = []string{"name", "type", "cron", "source", "log_keep_num", "script", "remark"}
+	app.UpdateFields = []string{"name", "type", "cron", "source", "log_keep_num", "script", "project_dir_id", "remark"}
 
 	// 注册手动执行任务的路由
 	group.POST("/exec/:id", app.Exec)
@@ -64,18 +63,22 @@ func (app SchTaskApp) Exec(ctx *gin.Context) {
 // List 获取计划任务列表
 // 支持按名称模糊查询和分页
 func (app SchTaskApp) List(ctx *gin.Context) {
-	log.Println("----------List------")
-	log.Println("List externalNas")
 	// 创建任务实例
-	externalNas := scheduled.SchTask{}
+	schTask := scheduled.SchTask{}
 	// 从查询参数中获取名称过滤条件
 	name := ctx.Query("name")
 	// 获取分页查询参数
 	query := request.GetPageQuery(ctx)
 	// 添加名称模糊查询条件
 	query.AddFilter(request.NewLikeFilter("name", name))
+
+	project_dir_id := ctx.Query("project_dir_id")
+	if project_dir_id != "" {
+		// 如果提供了项目目录ID，则添加过滤条件
+		query.AddFilter(request.NewEqualFilter("project_dir_id", project_dir_id))
+	}
 	// 执行分页查询
-	list, count, err := externalNas.List(query)
+	list, count, err := schTask.List(query)
 	if err == nil {
 		// 查询成功时返回列表数据
 		response.List(ctx, "", count, list)

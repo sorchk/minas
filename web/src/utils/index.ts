@@ -86,3 +86,46 @@ export const copyText = (text: string) => {
   } catch (err) {
   }
 }
+
+/**
+ * 根据状态码生成状态标签HTML
+ * @param statusMapping 状态映射对象，包含状态信息和类型
+ * @param status 状态值
+ * @param defaultText 默认文本，当状态不存在时显示
+ * @param useHtml 是否使用HTML格式，默认为true
+ * @returns 状态标签字符串
+ */
+export function getStatusTag(statusMapping: any, status: number | string, defaultText: string = '未知', useHtml: boolean = true): string {
+  const statusKey = String(status);
+  const statusInfo = statusMapping[statusKey];
+  
+  if (!statusInfo) {
+    return defaultText;
+  }
+  
+  const { info, type } = statusInfo;
+  
+  if (!useHtml) {
+    return info;
+  }
+
+  let color = '';
+  switch (type) {
+    case 'success':
+      color = '#52c41a';
+      break;
+    case 'error':
+      color = '#f5222d';
+      break;
+    case 'warning':
+      color = '#faad14';
+      break;
+    case 'info':
+      color = '#1890ff';
+      break;
+    default:
+      color = '#d9d9d9';
+  }
+
+  return `<span style="color: ${color}">${info}</span>`;
+}

@@ -43,6 +43,7 @@ type SchTask struct {
 	LogKeepNum            uint   `gorm:"default:0;comment:'保留日志数量'" json:"log_keep_num"`    // 保留的日志数量
 	Script                string `gorm:"comment:'任务' size:102400 default:''" json:"script"` // 任务配置脚本（JSON格式）
 	Remark                string `gorm:"comment:'备注'" json:"remark"`                        // 任务备注
+	ProjectDirID          string `gorm:"comment:'项目目录ID';default:0" json:"project_dir_id"`  // 项目目录ID，关联到项目目录
 }
 
 // TableName 返回数据库表名

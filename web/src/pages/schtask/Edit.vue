@@ -17,6 +17,19 @@
         <n-form-item-gi :span="24" :label="t('fields.name')" path="name">
           <n-input :placeholder="t('fields.name')" v-model:value="schTask.name" />
         </n-form-item-gi>
+        
+        <!-- 添加项目目录选择 -->
+        <n-form-item-gi :span="24" :label="t('fields.projectdir')" path="project_dir_id">
+          <n-tree-select
+            v-model:value="schTask.project_dir_id"
+            :options="treeData"
+            :default-expanded-keys="expandedKeys"
+            placeholder="选择项目目录"
+            :node-props="treeNodeProps"
+            :render-label="renderTreeLabel"
+          />
+        </n-form-item-gi>
+        
         <n-form-item-gi :span="12" :label="t('fields.type')" path="type">
           <n-select v-model:value="schTask.type" :options="typeOptions" @update:value="onSelectType" />
         </n-form-item-gi>
@@ -168,6 +181,7 @@ import {
   NTooltip,
   useMessage,
   TreeSelectOption,
+  TreeOption,
   TreeSelectOverrideNodeClickBehavior,
   NSelect,
   NInputNumber,
@@ -185,7 +199,9 @@ import XPageHeader from "@/components/PageHeader.vue";
 import { useRoute, useRouter } from "vue-router";
 import schTaskApi from "@/api/sch/task";
 import externalNasApi from "@/api/nas/external";
+import projectDirApi from "@/api/basic/projectdir";
 import type { SchTask } from "@/api/sch/task";
+import type { ProjectDirItem } from "@/api/basic/projectdir";
 import { typeOptions, backupTypeOptions } from "@/api/sch/task";
 import { useForm, emailRule, requiredRule, customRule } from "@/utils/form";
 import { useI18n } from 'vue-i18n'
@@ -213,6 +229,72 @@ const rules: any = {
 const nasOptions = ref(new Array<{ label: string; value: string; }>());
 const form = ref({ script: {} as any } as any);
 
+// 项目目录树相关状态
+const treeData = ref<TreeOption[]>([]);
+const treeLoading = ref(false);
+const expandedKeys = ref<string[]>([]);
+
+// 项目目录树加载
+const loadProjectDirTree = async () => {
+  treeLoading.value = true;
+  try {
+    // 获取task类型的项目目录树
+    const res = await projectDirApi.getTree(); // 1表示模块类型
+    if (res.data && Array.isArray(res.data)) {
+      treeData.value = convertToTreeOptions(res.data);
+      
+      // 如果有数据，默认展开第一级
+      if (treeData.value.length > 0) {
+        expandedKeys.value = [treeData.value[0].key as string];
+      }
+    }
+  } catch (error) {
+    console.error("加载项目目录树失败", error);
+  } finally {
+    treeLoading.value = false;
+  }
+};
+
+// 转换项目目录数据为树形选项
+const convertToTreeOptions = (dirs: ProjectDirItem[]): TreeOption[] => {
+  return dirs.map(dir => ({
+    key: dir.id.toString(),
+    label: dir.name,
+    children: dir.children && dir.children.length > 0 
+      ? convertToTreeOptions(dir.children) 
+      : undefined
+  }));
+};
+
+// 树节点渲染
+const renderTreeLabel = (info: { option: TreeOption }) => {
+  return h(
+    "div",
+    {
+      style: "display: flex; align-items: center;"
+    },
+    [
+      h(
+        NIcon,
+        {
+          style: "margin-right: 4px"
+        },
+        {
+          default: () => h(FolderIcon)
+        }
+      ),
+      info.option.label as string
+    ]
+  );
+};
+
+// 树节点属性
+const treeNodeProps = ({ option }: { option: TreeOption }) => {
+  return {
+    style: "cursor: pointer;"
+  };
+};
+
 const { submit, submiting } = useForm(form, () => {
   const params = deepClone(schTask.value);
   params.script = JSON.stringify(schTask.value.script)
@@ -228,11 +310,22 @@ const onSelectType = () => {
 
 async function fetchData() {
   const id = route.params.id as string || ''
+  
+  // 加载项目目录树
+  await loadProjectDirTree();
+  
+  // 检查URL查询参数是否包含项目目录ID
+  const projectDirId = route.query.project_dir_id;
+  
   if (id) {
     const r = await schTaskApi.load(id);
     schTask.value = r.data as SchTask;
     schTask.value.script = JSON.parse(schTask.value.script)
+  } else if (projectDirId) {
+    // 如果是新建任务，且URL中包含项目目录ID参数
+    schTask.value.project_dir_id = parseInt(projectDirId as string);
   }
+  
   const nasList = (await externalNasApi.search({
     filters: "",
     page: 1,
@@ -247,7 +340,6 @@ async function fetchData() {
       nasOptions.value.push({ "label": item.name, "value": item.rc_name })
     }
   }
-
 }
 onMounted(fetchData);
 </script>

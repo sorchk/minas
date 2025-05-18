@@ -9,6 +9,12 @@
               {{ props.title }}
             </div>
             <div class="bar-item btn-list">
+              <n-button size="small" class="topButton" @click="back">
+                <template #icon><n-icon>
+                    <BackIcon />
+                  </n-icon></template>
+                返回
+              </n-button>
               <n-button size="small" class="topButton" @click="copy">
                 <template #icon><n-icon>
                     <CopyOutlined />
@@ -57,7 +63,7 @@
             <template v-for="(item, subindex) in group.items">
               <div v-if="!item.hidden" :key="item.id" :name="item.id" @click="() => { }"
                 @mousedown="startDrag(item.id, $event)">
-                   {{ item.name }}
+                {{ item.name }}
               </div>
             </template>
           </n-collapse-item>
@@ -73,7 +79,7 @@
     <!-- 右键菜单 -->
     <contextMenu :getGraph="getGraph" :funcs="funcs" @attrs="openAttrs" />
     <!-- 弹窗格式 -->
-    <attribute-form ref="dialogAttributes">
+    <attribute-form ref="dialogAttributes" @change="onChange">
     </attribute-form>
     <codeeditor ref="codeEditorRef" @upgrade="updateCode"></codeeditor>
   </div>
@@ -83,7 +89,7 @@
 import { Cell, Edge } from "@antv/x6";
 import useClipboard from "vue-clipboard3";
 const { toClipboard } = useClipboard();
-
+import { ArrowBackCircleOutline as BackIcon, SaveOutline as SaveIcon, FolderOutline as FolderIcon } from '@vicons/ionicons5';
 import codeeditor from "./components/code.vue";
 import { MiniMap } from '@antv/x6-plugin-minimap';
 import {
@@ -128,10 +134,11 @@ const props = defineProps({
   title: { type: String },
   groups: { type: Array<any>, default: () => new Array<any>() },
   edgeFields: { type: Array<any>, default: () => new Array<any>() },
-  openGroup: { type: String, default: '' }
+  openGroup: { type: String, default: '' },
+  result: { type: Object, default: () => new Object() }
 });
 // 定义子组件向父组件传值/事件
-const emit = defineEmits(['save', 'exec']);
+const emit = defineEmits(['save', 'exec', 'back', 'change']);
 // 页面元素引用
 const dialogAttributes = shallowRef();
 const containerRef = ref();
@@ -203,6 +210,9 @@ const clear = () => {
   }
 }
 const message = useMessage();
+const back = () => {
+  emit('back');
+}
 const copy = () => {
   state.dagGraph?.graph.resetSelection();
   if (state.currentCell !== null) {
@@ -292,7 +302,16 @@ onMounted(() => {
       },
     }),
   )
+
+  // 监听图形内容变化事件 必须在最后，否则开始初始化图形是就会触发变化
+  state.dagGraph?.graph?.on("cell:added", onChange);
+  state.dagGraph?.graph?.on("cell:removed", onChange);
+  state.dagGraph?.graph?.on("cell:change:*", onChange);
+  state.dagGraph?.graph?.on("edge:connected", onChange);
 });
+const onChange = () => {
+  emit('change', getContent());
+}
 // 页面销毁时
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resizeFn);
@@ -309,6 +328,17 @@ watch(
   () => props.content,
   (value) => {
     setContent(value);
+  }
+);
+//监控数据变化
+watch(
+  () => props.result,
+  (value) => {
+    console.log("Result updated:", value);
+    if (value && state.dagGraph) {
+      // 更新各节点状态样式
+      updateNodesStatus(value);
+    }
   }
 );
 //设置图数据
@@ -367,7 +397,55 @@ const initEvent = async () => {
     openAttrs()
     return false;
   });
+
+
 }
+
+// 更新节点状态样式
+const updateNodesStatus = (result: any) => {
+  if (!result || !state.dagGraph) return;
+
+  // 获取执行上下文中的节点状态信息
+  const nodeStatus = result.nodeStatus || {};
+  const nodeErrors = result.nodeErrors || {};
+  const nodeResults = result.nodeResults || {};
+  const graph = state.dagGraph.getGraph();
+
+  // 遍历所有节点，更新样式
+  graph.getNodes().forEach(node => {
+    const nodeId = node.id.toString();
+    const status = nodeStatus[nodeId];
+
+    if (status) {
+      // 更新节点数据中的状态
+      let nodeData = node.getData() || {}; 
+
+      // 设置节点状态
+      nodeData.status = status;
+
+      // 如果有错误信息，添加到节点数据中
+      if (nodeErrors[nodeId]) {
+        nodeData.error = nodeErrors[nodeId];
+      }
+
+      // 如果有执行结果，添加到节点数据中
+      if (nodeId in nodeResults) {
+        nodeData.result = nodeResults[nodeId];
+      }
+      //更新数据
+      node.trigger("change:data", {
+        cell: node,
+        current: nodeData,
+        options: {
+          silent: false,
+          overwrite: false,
+          deep: true,
+        }
+      });
+    }
+  });
+
+};
 </script>
 
 <style lang="scss" scoped>

@@ -92,6 +92,18 @@ export class DagGraph {
         let graph = this.graph;
         const cells: any[] = [];
         data.cells.forEach((item: any) => {
+            console.log("Processing item:", item);
+            const itemData = item.data;
+            if(itemData){
+                //清理运行数据
+                delete itemData.status;
+                delete itemData.result;
+                delete itemData.error;
+                delete itemData.startTime;
+                delete itemData.endTime;
+            }
+           
+
             if (item.shape === 'dag-edge') {
                 cells.push(graph.createEdge(item));
             } else {
@@ -107,6 +119,9 @@ export class DagGraph {
                     this.idIndex = num;
                 }
             }
+            console.log("idIndex:", this.idIndex)
+
+            console.log("Processing item:", item)
         });
         graph.resetCells(cells);
         //居中显示

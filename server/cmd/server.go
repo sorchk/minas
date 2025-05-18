@@ -13,6 +13,7 @@ import (
 	"net/http"                 // HTTP服务
 	"os"                       // 操作系统功能
 	"path/filepath"            // 文件路径处理
+	"server/dagflow"           // DAGFlow服务
 	"server/data"              // 数据相关
 	"server/middleware"        // 中间件
 	"server/route"             // 路由定义
@@ -168,6 +169,9 @@ func StartServer() {
 		logger.LOG.Errorf("启动定时任务错误：%s", err.Error())
 	}
 
+	// 初始化DAGFlow服务
+	initDAGFlow()
+
 	// 初始化Gin应用
 	app := gin.Default()
 	logger.LOG.Infof("Gin框架初始化成功，调试模式：%v", config.CONF.Debug)
@@ -258,4 +262,11 @@ func httpsServer(app *gin.Engine) {
 	if err := app.RunTLS(config.CONF.App.Host+":"+config.CONF.App.SslPort, CERT_CRT_PATH, CERT_KEY_PATH); err != nil {
 		panic(err) // 启动失败时触发panic
 	}
+}
+
+// initDAGFlow 初始化DAGFlow服务
+func initDAGFlow() {
+	// 初始化DAGFlow服务
+	dagflow.Init()
+	logger.LOG.Infof("DAGFlow服务初始化成功")
 }

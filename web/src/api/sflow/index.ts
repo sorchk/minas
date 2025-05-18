@@ -33,6 +33,9 @@ const baseUrl = '/sflow/sflow';
 
 // 作业流程API类
 export class SFlowApi {
+    saveContent(data: { id: number; content: any; }) {
+        return ajax.post<SFlow>(baseUrl + '/saveContent', data)
+    }
     /**
      * 搜索作业流程列表
      * @param args 搜索参数

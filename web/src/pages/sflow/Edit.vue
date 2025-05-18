@@ -120,7 +120,7 @@ const { submit, submiting } = useForm(form, () => {
 const loadSFlow = async () => {
   if (isEdit) {
     try {
-      const res = await sflowApi.load(route.params.id as string)
+      const res = await sflowApi.load(Number(route.params.id as string))
       if (res.code === 200 && res.data) {
         sflow.value = res.data
          

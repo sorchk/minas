@@ -445,7 +445,6 @@ export class Xxtea {
         if (!key) {
             key = "";
         }
-        console.log("aaaaaaa:", (data.indexOf(ENC_PREFIX) == 0))
         if (data.indexOf(ENC_PREFIX) == 0) {
             data = data.substring(4);
             return this.decrypt(this.atob(data), key);

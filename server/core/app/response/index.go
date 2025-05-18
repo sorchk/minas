@@ -41,6 +41,18 @@ func Data(ctx *gin.Context, message string, data interface{}) {
 	ctx.Abort()
 }
 
+// DataCode 返回单个数据对象自定义状态码消息
+// 适用于需要自定义状态码的场景
+// 参数:
+//   - ctx: Gin上下文
+//   - code: 自定义状态码
+//   - message: 消息
+//   - data: 要返回的数据
+func DataCode(ctx *gin.Context, code int, message string, data interface{}) {
+	ctx.JSON(http.StatusOK, ResData{Code: code, Msg: message, Data: data})
+	ctx.Abort()
+}
+
 // Success 返回成功消息
 // 适用于只需要返回操作成功的接口
 // 参数:
@@ -70,7 +82,7 @@ func Error(ctx *gin.Context, err error) {
 		}
 	} else {
 		logger.LOG.Errorf("Error: %s", err.Error())
-		Message(ctx, 4000, err.Error())
+		Message(ctx, 400, err.Error())
 		return
 	}
 }

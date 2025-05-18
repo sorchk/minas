@@ -10,6 +10,7 @@ import (
 	"server/app/schtask"
 	"server/app/sflow"
 	"server/app/term"
+	"server/dagflow/api"
 	"server/middleware"
 	"server/utils/config"
 
@@ -83,6 +84,14 @@ func Init(app *gin.Engine) {
 			// 添加作业流程相关路由
 			sflow.SFlowApp{}.AddRoutes(SFlowSystem)
 			sflow.SFlowLogApp{}.AddRoutes(SFlowSystem)
+		}
+
+		// DAG流程路由组，需要认证中间件保护
+		RagFlowSystem := v1.Group("/dagflow", middleware.AuthMiddleware)
+		{
+			// 添加DAG流程相关路由
+			ragFlowAPI := &api.DAGFlowAPI{}
+			ragFlowAPI.AddRoutes(RagFlowSystem)
 		}
 
 		// 文件存储(NAS)路由组，需要认证中间件保护

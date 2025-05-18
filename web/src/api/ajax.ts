@@ -58,6 +58,7 @@ class Ajax {
             (response: any) => {
                 // store.commit(Mutations.SetAjaxLoading, false);
                 if (response.data.code == null || response.data.code == undefined) {
+                    console.log(response)
                     console.log(response.data)
                     window.message.error("接口：" + response.config.url + "，响应数据格式错误，请联系管理员！", { duration: 0, closable: true, })
                 }

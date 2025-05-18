@@ -134,7 +134,7 @@
 
 import rsapi from "@/api";
 import { Cell, Edge } from '@antv/x6';
-import { reactive, computed } from 'vue';
+import { reactive, computed, watch } from 'vue';
 import { useMessage, NIcon, NTreeSelect, NSwitch, NSelect, NRadio, NRadioButton, NRadioGroup, NInput, NInputNumber, NTooltip, NModal, NSpace, NForm, NFormItem, NButton } from 'naive-ui';
 import { 
   CopyOutlined, 
@@ -155,7 +155,11 @@ import DagParams from "./params/index.vue";
 import { deepClone } from '../../graph/shape';
 
 const message = useMessage();
-
+// 定义子组件向父组件传值/事件
+const emit = defineEmits(['change']);
+const onChange = (value: any) => {
+  emit('change', value);
+}
 interface Field {
   prop: string,
   type: string,
@@ -206,6 +210,11 @@ const state = reactive<CurrentPageData>({
   fullscreen: false,
   title: '',
 });
+
+// 监听state.form变化
+watch(() => state.form, (newValue) => {
+  onChange(newValue);
+}, { deep: true });
 
 // 格式化树形数据 
 const formatTreeData = (data: any[], labelField: string, valueField: string): Array<{ label: string; key: string; disabled?: boolean; children?: any[] }> => {

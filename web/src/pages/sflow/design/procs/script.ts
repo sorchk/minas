@@ -46,15 +46,7 @@ export const script_components = [
                 placeholder: "例如:123或${param.id}"
             },
             { prop: "scriptText", label: "脚本", type: "editor", value: "", lang: 'javascript', placeholder: "请输入" },
-            {
-                prop: "compilable",
-                label: "编译脚本",
-                type: "switch",
-                active: "是",
-                inactive: "否",
-                value: true,
-                help: '编译脚本将提供运行速度，需要脚本语言本身支持，否则不编译。'
-            }
+            { prop: "timeout", label: "执行超时", type: "number", value: 5000, placeholder: "请输入超时时间（毫秒）" },
         ]
 
     },

@@ -16,9 +16,11 @@ const props = defineProps({
 const className = computed(() => {
   const classNameTmp = {
     'disabled': !state.status && !state.enabled,
-    'success': state.status == 'success',
+    'success': state.status == 'completed',
     'failed': state.status == 'failed',
     'running': state.status == 'running',
+    'pending': state.status == 'pending',
+
   }
   return classNameTmp
 })
